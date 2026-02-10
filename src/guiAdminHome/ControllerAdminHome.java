@@ -1,6 +1,7 @@
 package guiAdminHome;
 
 import database.Database;
+import guiAdminResetPassword.ViewAdminResetPassword;
 
 /*******
  * <p> Title: GUIAdminHomePage Class. </p>
@@ -111,12 +112,10 @@ public class ControllerAdminHome {
 	 * this function has not yet been implemented. </p>
 	 */
 	protected static void setOnetimePassword () {
-		System.out.println("\n*** WARNING ***: One-Time Password Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.setTitle("*** WARNING ***");
-		ViewAdminHome.alertNotImplemented.setHeaderText("One-Time Password Issue");
-		ViewAdminHome.alertNotImplemented.setContentText("One-Time Password Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.showAndWait();
+	    guiAdminResetPassword.ViewAdminResetPassword.display(
+	        ViewAdminHome.theStage, ViewAdminHome.theUser);
 	}
+	
 	
 	/**********
 	 * <p> 
@@ -127,13 +126,56 @@ public class ControllerAdminHome {
 	 * this function has not yet been implemented. </p>
 	 */
 	protected static void deleteUser() {
-		System.out.println("\n*** WARNING ***: Delete User Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.setTitle("*** WARNING ***");
-		ViewAdminHome.alertNotImplemented.setHeaderText("Delete User Issue");
-		ViewAdminHome.alertNotImplemented.setContentText("Delete User Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.showAndWait();
+	    // Get list of users
+	    java.util.List<String> users = theDatabase.getUserList();
+	    
+	    // Create choice dialog
+	    javafx.scene.control.ChoiceDialog<String> dialog = new javafx.scene.control.ChoiceDialog<>(users.get(0), users);
+	    dialog.setTitle("Delete User");
+	    dialog.setHeaderText("Select a user to delete");
+	    dialog.setContentText("User:");
+	    
+	    // Show dialog and get result
+	    java.util.Optional<String> result = dialog.showAndWait();
+	    
+	    if (result.isPresent() && !result.get().equals("<Select a User>")) {
+	        String selectedUser = result.get();
+	        
+	        // Don't allow deleting yourself
+	        if (selectedUser.equals(ViewAdminHome.theUser.getUserName())) {
+	            ViewAdminHome.alertNotImplemented.setTitle("Error");
+	            ViewAdminHome.alertNotImplemented.setHeaderText("Cannot Delete");
+	            ViewAdminHome.alertNotImplemented.setContentText("You cannot delete your own account!");
+	            ViewAdminHome.alertNotImplemented.showAndWait();
+	            return;
+	        }
+	        
+	        // Confirm deletion
+	        javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+	        confirm.setTitle("Confirm Delete");
+	        confirm.setHeaderText("Delete user: " + selectedUser + "?");
+	        confirm.setContentText("This action cannot be undone.");
+	        
+	        java.util.Optional<javafx.scene.control.ButtonType> confirmResult = confirm.showAndWait();
+	        if (confirmResult.isPresent() && confirmResult.get() == javafx.scene.control.ButtonType.OK) {
+	            // Delete the user
+	            if (theDatabase.deleteUser(selectedUser)) {
+	                ViewAdminHome.alertNotImplemented.setTitle("Success");
+	                ViewAdminHome.alertNotImplemented.setHeaderText("User Deleted");
+	                ViewAdminHome.alertNotImplemented.setContentText("User '" + selectedUser + "' has been deleted.");
+	                ViewAdminHome.alertNotImplemented.showAndWait();
+	                
+	                // Update user count
+	                ViewAdminHome.label_NumberOfUsers.setText("Number of users: " + theDatabase.getNumberOfUsers());
+	            } else {
+	                ViewAdminHome.alertNotImplemented.setTitle("Error");
+	                ViewAdminHome.alertNotImplemented.setHeaderText("Delete Failed");
+	                ViewAdminHome.alertNotImplemented.setContentText("Could not delete user.");
+	                ViewAdminHome.alertNotImplemented.showAndWait();
+	            }
+	        }
+	    }
 	}
-	
 	/**********
 	 * <p> 
 	 * 
@@ -143,11 +185,24 @@ public class ControllerAdminHome {
 	 * this function has not yet been implemented. </p>
 	 */
 	protected static void listUsers() {
-		System.out.println("\n*** WARNING ***: List Users Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.setTitle("*** WARNING ***");
-		ViewAdminHome.alertNotImplemented.setHeaderText("List User Issue");
-		ViewAdminHome.alertNotImplemented.setContentText("List Users Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.showAndWait();
+	    // Get list of users from database
+	    java.util.List<String> users = theDatabase.getUserList();
+	    
+	    // Build display string
+	    StringBuilder userList = new StringBuilder();
+	    userList.append("Total Users: ").append(users.size() - 1).append("\n\n"); // -1 for "<Select a User>"
+	    
+	    for (String user : users) {
+	        if (!user.equals("<Select a User>")) {
+	            userList.append("• ").append(user).append("\n");
+	        }
+	    }
+	    
+	    // Show in alert
+	    ViewAdminHome.alertNotImplemented.setTitle("All Users");
+	    ViewAdminHome.alertNotImplemented.setHeaderText("Users in System");
+	    ViewAdminHome.alertNotImplemented.setContentText(userList.toString());
+	    ViewAdminHome.alertNotImplemented.showAndWait();
 	}
 	
 	/**********
@@ -177,13 +232,34 @@ public class ControllerAdminHome {
 	 * 
 	 * @param emailAddress	This String holds what is expected to be an email address
 	 */
+	/**********
+	 * <p> 
+	 * 
+	 * Title: invalidEmailAddress () Method. </p>
+	 * 
+	 * <p> Description: Protected method that checks if an email address is valid
+	 * using the EmailValidator class.</p>
+	 * 
+	 * @param emailAddress	This String holds what is expected to be an email address
+	 */
 	protected static boolean invalidEmailAddress(String emailAddress) {
+		// Check if empty
 		if (emailAddress.length() == 0) {
 			ViewAdminHome.alertEmailError.setContentText(
-					"Correct the email address and try again.");
+					"Email address cannot be empty.");
 			ViewAdminHome.alertEmailError.showAndWait();
 			return true;
 		}
+		
+		// Validate email format using EmailValidator
+		Validators.EmailValidator emailValidator = new Validators.EmailValidator();
+		if (!emailValidator.validate(emailAddress)) {
+			ViewAdminHome.alertEmailError.setContentText(
+					"Invalid email format: " + emailValidator.getErrorMessage());
+			ViewAdminHome.alertEmailError.showAndWait();
+			return true;
+		}
+		
 		return false;
 	}
 	

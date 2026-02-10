@@ -102,38 +102,70 @@ public class ControllerFirstAdmin {
 	 * database.  If that is successful, we proceed to the UserUpdate page.</p>
 	 * 
 	 */
+	/**********
+	 * <p> Method: doSetupAdmin() </p>
+	 * 
+	 * <p> Description: This method is called when the user presses the button to set up the Admin
+	 * account. It validates username and password before creating the account.</p>
+	 * 
+	 */
+	/**********
+	 * <p> Method: doSetupAdmin() </p>
+	 * 
+	 * <p> Description: This method is called when the user presses the button to set up the Admin
+	 * account. It validates username and password before creating the account.</p>
+	 * 
+	 */
+	/**********
+	 * <p> Method: doSetupAdmin() </p>
+	 * 
+	 * <p> Description: This method is called when the user presses the button to set up the Admin
+	 * account. It validates username and password before creating the account.</p>
+	 * 
+	 */
 	protected static void doSetupAdmin(Stage ps, int r) {
-		
-		// Make sure the two passwords are the same
-		if (adminPassword1.compareTo(adminPassword2) == 0) {
-        	// Create the passwords and proceed to the user home page
-        	User user = new User(adminUsername, adminPassword1, "", "", "", "", "", true, false, 
-        			false);
-            try {
-            	// Create a new User object with admin role and register in the database
-            	theDatabase.register(user);
-            	}
-            catch (SQLException e) {
-                System.err.println("*** ERROR *** Database error trying to register a user: " + 
-                		e.getMessage());
-                e.printStackTrace();
-                System.exit(0);
-            }
-            
-            // User was established in the database, so navigate to the User Update Page
-        	guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewFirstAdmin.theStage, user);
-		}
-		else {
-			// The two passwords are NOT the same, so clear the passwords, explain the passwords
-			// must be the same, and clear the message as soon as the first character is typed.
-			ViewFirstAdmin.text_AdminPassword1.setText("");
-			ViewFirstAdmin.text_AdminPassword2.setText("");
-			ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
-					"The two passwords must match. Please try again!");
-		}
+	    
+	    // Validate username first
+	    Validators.UsernameValidator usernameValidator = new Validators.UsernameValidator();
+	    if (!usernameValidator.validate(adminUsername)) {
+	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username Error: " + usernameValidator.getErrorMessage());
+	        return;
+	    }
+	    
+	    // Make sure the two passwords are the same
+	    if (adminPassword1.compareTo(adminPassword2) != 0) {
+	        ViewFirstAdmin.text_AdminPassword1.setText("");
+	        ViewFirstAdmin.text_AdminPassword2.setText("");
+	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
+	                "The two passwords must match. Please try again!");
+	        return;
+	    }
+	    
+	    // Validate password strength
+	    validator.PasswordValidator passwordValidator = new validator.PasswordValidator();
+	    if (!passwordValidator.validate(adminPassword1)) {
+	        ViewFirstAdmin.text_AdminPassword1.setText("");
+	        ViewFirstAdmin.text_AdminPassword2.setText("");
+	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText(
+	                "Password requirements not met:\n" + passwordValidator.getRequirementsStatus());
+	        return;
+	    }
+	    
+	    // All validations passed - create the user
+	    User user = new User(adminUsername, adminPassword1, "", "", "", "", "", true, false, false);
+	    try {
+	        theDatabase.register(user);
+	    }
+	    catch (SQLException e) {
+	        System.err.println("*** ERROR *** Database error trying to register a user: " + 
+	                e.getMessage());
+	        e.printStackTrace();
+	        System.exit(0);
+	    }
+	    
+	    // User was established in the database, so navigate to the User Update Page
+	    guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewFirstAdmin.theStage, user);
 	}
-	
-	
 	/**********
 	 * <p> Method: performQuit() </p>
 	 * 

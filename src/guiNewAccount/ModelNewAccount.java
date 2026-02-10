@@ -1,19 +1,40 @@
 package guiNewAccount;
 
-/*******
- * <p> Title: ModelNewAccount Class. </p>
- * 
- * <p> Description: The NewAccount Page Model.  This class is not used as there is no
- * data manipulated by this MVC beyond accepting role information and saving it in the
- * database.</p>
- * 
- * <p> Copyright: Lynn Robert Carter © 2025 </p>
- * 
- * @author Lynn Robert Carter
- * 
- * @version 1.00		2025-08-15 Initial version
- *  
- */
-public class ModelNewAccount {
+import validator.PasswordValidator;
 
+public class ModelNewAccount {
+    
+    private static PasswordValidator passwordValidator = new PasswordValidator();
+
+    public static String validatePassword(String password) {
+        boolean isValid = passwordValidator.validate(password);
+        if (isValid) {
+            return "";
+        }
+        return passwordValidator.getRequirementsStatus();
+    }
+    
+    public static boolean hasUppercase() {
+        return passwordValidator.hasUppercase();
+    }
+
+    public static boolean hasLowercase() {
+        return passwordValidator.hasLowercase();
+    }
+
+    public static boolean hasDigit() {
+        return passwordValidator.hasDigit();
+    }
+
+    public static boolean hasSpecialChar() {
+        return passwordValidator.hasSpecialCharacter();
+    }
+
+    public static boolean hasMinLength() {
+        return passwordValidator.hasMinLength();
+    }
+
+    public static boolean hasMaxLength() {
+        return passwordValidator.hasMaxLength();
+    }
 }

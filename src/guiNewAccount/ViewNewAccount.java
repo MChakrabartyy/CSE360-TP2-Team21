@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import database.Database;
 import entityClasses.User;
 
+
 /*******
  * <p> Title: ViewNewAccount Class. </p>
  * 
@@ -53,6 +54,9 @@ public class ViewNewAccount {
     protected static PasswordField text_Password1 = new PasswordField();
     protected static PasswordField text_Password2 = new PasswordField();
     protected static Button button_UserSetup = new Button("User Setup");
+ // Error labels for real-time validation feedback
+    protected static Label label_UsernameError = new Label("");
+    protected static Label label_PasswordError = new Label("");
     protected static TextField text_Invitation = new TextField();
 
 	// This alert is used should the invitation code be invalid
@@ -136,7 +140,8 @@ public class ViewNewAccount {
     	// Place all of the established GUI elements into the pane
     	theRootPane.getChildren().clear();
     	theRootPane.getChildren().addAll(label_NewUserCreation, label_NewUserLine, text_Username,
-    			text_Password1, text_Password2, button_UserSetup, button_Quit);    	
+    			text_Password1, text_Password2, button_UserSetup, button_Quit,
+    			label_UsernameError, label_PasswordError); 	
 
 		// Set the title for the window, display the page, and wait for the Admin to do something
 		theStage.setTitle("CSE 360 Foundation Code: New User Account Setup");	
@@ -172,7 +177,15 @@ public class ViewNewAccount {
 		// Establish the text input operand asking for a username
 		setupTextUI(text_Username, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 160, true);
 		text_Username.setPromptText("Enter the Username");
-		
+		// Add real-time validation for username
+		text_Username.textProperty().addListener((obs, _, newVal) -> {
+		    if (newVal.length() > 0) {
+		        String error = Validators.UsernameValidator.checkUsername(newVal);
+		        label_UsernameError.setText(error);
+		    } else {
+		        label_UsernameError.setText("");
+		    }
+		});
 		// Establish the text input operand field for the password
 		setupTextUI(text_Password1, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 210, true);
 		text_Password1.setPromptText("Enter the Password");
@@ -180,6 +193,12 @@ public class ViewNewAccount {
 		// Establish the text input operand field to confirm the password
 		setupTextUI(text_Password2, "Arial", 18, 300, Pos.BASELINE_LEFT, 50, 260, true);
 		text_Password2.setPromptText("Enter the Password Again");
+		// Set up error labels for real-time validation
+		setupLabelUI(label_UsernameError, "Arial", 14, 300, Pos.BASELINE_LEFT, 360, 165);
+		label_UsernameError.setStyle("-fx-text-fill: red;");
+
+		setupLabelUI(label_PasswordError, "Arial", 14, 300, Pos.BASELINE_LEFT, 360, 215);
+		label_PasswordError.setStyle("-fx-text-fill: red;");
 		
 		// If the invitation code is wrong, this alert dialog will tell the user
 		alertInvitationCodeIsInvalid.setTitle("Invalid Invitation Code");

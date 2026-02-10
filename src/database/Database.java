@@ -15,16 +15,17 @@ import entityClasses.User;
  * <p> Title: Database Class. </p>
  * 
  * <p> Description: This is an in-memory database built on H2.  Detailed documentation of H2 can
- * be found at https://www.h2database.com/html/main.html (Click on "PDF (2MP) for a PDF of 438 pages
- * on the H2 main page.)  This class leverages H2 and provides numerous special supporting methods.
+ * be found at https://www.h2database.com/html/main.html (Click on "PDF (2MB)" on the l3ft side
+ * of the page under the heading "Reference" for a PDF of 438 pages.)  This class leverages H2
+ * and provides numerous special supporting methods.
  * </p>
  * 
  * <p> Copyright: Lynn Robert Carter © 2025 </p>
  * 
  * @author Lynn Robert Carter
  * 
- * @version 2.00		2025-04-29 Updated and expanded from the version produce by on a previous
- * 							version by Pravalika Mukkiri and Ishwarya Hidkimath Basavaraj
+ * @version 2.00		2025-04-29 Updated and expanded from the version produce by Pravalika 
+ * 							Mukkiri and Ishwarya Hidkimath Basavaraj
  * @version 2.01		2025-12-17 Minor updates for Spring 2026
  */
 
@@ -37,7 +38,7 @@ public class Database {
 
 	// JDBC driver name and database URL 
 	static final String JDBC_DRIVER = "org.h2.Driver";   
-	static final String DB_URL = "jdbc:h2:~/FoundationDatabase";  
+	static final String DB_URL = "jdbc:h2:~/FoundationDatabase11"; 
 
 	//  Database credentials 
 	static final String USER = "sa"; 
@@ -82,19 +83,21 @@ public class Database {
  * 
  */
 	public void connectToDatabase() throws SQLException {
-		try {
-			Class.forName(JDBC_DRIVER); // Load the JDBC driver
-			connection = DriverManager.getConnection(DB_URL, USER, PASS);
-			statement = connection.createStatement(); 
-			// You can use this command to clear the database and restart from fresh.
-			//statement.execute("DROP ALL OBJECTS");
+	    try {
+	        Class.forName(JDBC_DRIVER); // Load the JDBC driver
+	        connection = DriverManager.getConnection(DB_URL, USER, PASS);
+	        statement = connection.createStatement(); 
+	        
+	        // ========== RESET DATABASE - TOGGLE THIS LINE ==========
+	        // Uncomment the next line to reset database, then comment it back
+	         //statement.execute("DROP ALL OBJECTS");
+	        // ========================================================
 
-			createTables();  // Create the necessary tables if they don't exist
-		} catch (ClassNotFoundException e) {
-			System.err.println("JDBC Driver not found: " + e.getMessage());
-		}
+	        createTables();  // Create the necessary tables if they don't exist
+	    } catch (ClassNotFoundException e) {
+	        System.err.println("JDBC Driver not found: " + e.getMessage());
+	    }
 	}
-
 	
 /*******
  * <p> Method: createTables </p>
@@ -243,7 +246,22 @@ public class Database {
 //		System.out.println(userList);
 		return userList;
 	}
+	
+	public List<String> getAllUsernames() {
+	    List<String> usernames = new ArrayList<>();
+	    String query = "SELECT userName FROM userDB";
 
+	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+	        ResultSet rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            usernames.add(rs.getString("userName"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return usernames;
+	}
 /*******
  * <p> Method: boolean loginAdmin(User user) </p>
  * 
@@ -793,16 +811,35 @@ public class Database {
 	 */
 	// update the email address
 	public void updateEmailAddress(String username, String emailAddress) {
-	    String query = "UPDATE userDB SET emailAddress = ? WHERE username = ?";
+	    String query = "UPDATE userDB SET emailAddress = ? WHERE userName = ?";
 	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 	        pstmt.setString(1, emailAddress);
 	        pstmt.setString(2, username);
 	        pstmt.executeUpdate();
 	        currentEmailAddress = emailAddress;
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	        e.printStackTrace(); 
 	    }
+	}  
+	    public boolean updatePassword(String username, String newPassword) {
+	        String query = "UPDATE userDB SET password = ? WHERE userName = ?";
+
+	        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+	            pstmt.setString(1, newPassword);
+	            pstmt.setString(2, username);
+
+	            int rows = pstmt.executeUpdate();
+	            if (rows == 1) {
+	                currentPassword = newPassword;
+	                return true;
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	        return false;
+
 	}
+	
 	
 	
 	/*******
@@ -902,6 +939,8 @@ public class Database {
 			}
 		}
 		return false;
+		
+		
 	}
 	
 	
@@ -1059,5 +1098,25 @@ public class Database {
 		} catch(SQLException se){ 
 			se.printStackTrace(); 
 		} 
+	}
+	/*******
+	 * <p> Method: boolean deleteUser(String username) </p>
+	 * 
+	 * <p> Description: Deletes a user from the database.</p>
+	 * 
+	 * @param username the username of the user to delete
+	 * 
+	 * @return true if deletion was successful, false otherwise
+	 */
+	public boolean deleteUser(String username) {
+	    String query = "DELETE FROM userDB WHERE userName = ?";
+	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+	        pstmt.setString(1, username);
+	        int rows = pstmt.executeUpdate();
+	        return rows > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
 	}
 }
