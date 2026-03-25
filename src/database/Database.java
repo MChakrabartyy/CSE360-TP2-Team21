@@ -90,7 +90,7 @@ public class Database {
 	        
 	        // ========== RESET DATABASE - TOGGLE THIS LINE ==========
 	        // Uncomment the next line to reset database, then comment it back
-	         //statement.execute("DROP ALL OBJECTS");
+	         // statement.execute("DROP ALL OBJECTS");
 	        // ========================================================
 
 	        createTables();  // Create the necessary tables if they don't exist
@@ -99,12 +99,13 @@ public class Database {
 	    }
 	}
 	
-/*******
- * <p> Method: createTables </p>
- * 
- * <p> Description: Used to create new instances of the two database tables used by this class.</p>
- * 
- */
+	/*******
+	 * <p> Method: createTables </p>
+	 * 
+	 * <p> Description: Used to create new instances of the two database tables used by this class.</p>
+	 * 
+	 * @throws SQLException when there is an issue creating the tables
+	 */
 	private void createTables() throws SQLException {
 		// Create the user database
 		String userTable = "CREATE TABLE IF NOT EXISTS userDB ("
@@ -223,14 +224,14 @@ public class Database {
 		
 	}
 	
-/*******
- *  <p> Method: List getUserList() </p>
- *  
- *  <P> Description: Generate an List of Strings, one for each user in the database,
- *  starting with "<Select User>" at the start of the list. </p>
- *  
- *  @return a list of userNames found in the database.
- */
+	/*******
+	 *  <p> Method: List getUserList() </p>
+	 *  
+	 *  <p> Description: Generate a List of Strings, one for each user in the database,
+	 *  starting with {@code <Select User>} at the start of the list. </p>
+	 *  
+	 *  @return a list of userNames found in the database.
+	 */
 	public List<String> getUserList () {
 		List<String> userList = new ArrayList<String>();
 		userList.add("<Select a User>");
@@ -246,6 +247,14 @@ public class Database {
 //		System.out.println(userList);
 		return userList;
 	}
+	
+	/*******
+	 * <p> Method: getAllUsernames() </p>
+	 * 
+	 * <p> Description: Returns a list of all usernames in the database.</p>
+	 * 
+	 * @return a list of all usernames
+	 */
 	
 	public List<String> getAllUsernames() {
 	    List<String> usernames = new ArrayList<>();
@@ -821,6 +830,16 @@ public class Database {
 	        e.printStackTrace(); 
 	    }
 	}  
+	/*******
+	 * <p> Method: updatePassword(String username, String newPassword) </p>
+	 * 
+	 * <p> Description: Updates the password for a specified user.</p>
+	 * 
+	 * @param username the username of the user
+	 * @param newPassword the new password to set
+	 * 
+	 * @return true if the update was successful, false otherwise
+	 */
 	    public boolean updatePassword(String username, String newPassword) {
 	        String query = "UPDATE userDB SET password = ? WHERE userName = ?";
 

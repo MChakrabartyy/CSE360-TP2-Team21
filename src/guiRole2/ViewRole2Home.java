@@ -139,7 +139,7 @@ public class ViewRole2Home {
 	 * each GUI object. </p>
 	 * 
 	 * This is a singleton and is only performed once.  Subsequent uses fill in the changeable
-	 * fields using the displayRole2Home method.</p>
+	 * fields using the displayRole2Home method.
 	 * 
 	 */
 	private ViewRole2Home() {

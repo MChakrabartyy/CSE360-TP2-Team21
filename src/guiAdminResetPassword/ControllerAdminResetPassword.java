@@ -9,30 +9,45 @@ import database.Database;
 import entityClasses.User;
 import guiAdminHome.ViewAdminHome;
 
+/**
+ * <p>Title: ControllerAdminResetPassword Class</p>
+ * 
+ * <p>Description: Controller for Admin Reset Password page.</p>
+ *
+ * @author Ali
+ * @version 1.0
+ */
 public class ControllerAdminResetPassword {
 
+    /** Database reference */
     private static Database theDatabase =
             applicationMain.FoundationsMain.database;
 
-    // Store the admin who opened this page
+    /** The admin user who opened this page */
     protected static User adminUser;
 
-    protected static void initialize(User user) {
+    /**
+     * Default constructor.
+     */
+    public ControllerAdminResetPassword() {
+    }
 
-        // Save admin for Cancel navigation
+    /**
+     * Initializes the controller with the admin user.
+     * 
+     * @param user the admin user
+     */
+    protected static void initialize(User user) {
         adminUser = user;
 
-        // Populate user dropdown
         ObservableList<String> users =
                 FXCollections.observableArrayList(theDatabase.getUserList());
 
         ViewAdminResetPassword.combo_Users.setItems(users);
 
-        // Reset button
         ViewAdminResetPassword.button_Reset
                 .setOnAction(e -> handleReset());
 
-        // Cancel button → return to Admin Home
         ViewAdminResetPassword.button_Cancel.setOnAction(e ->
                 ViewAdminHome.displayAdminHome(
                         ViewAdminResetPassword.theStage,
@@ -41,8 +56,10 @@ public class ControllerAdminResetPassword {
         );
     }
 
+    /**
+     * Handles the reset password action.
+     */
     private static void handleReset() {
-
         String username =
                 ViewAdminResetPassword.combo_Users.getValue();
         String newPassword =
@@ -76,6 +93,11 @@ public class ControllerAdminResetPassword {
         ViewAdminResetPassword.text_ConfirmPassword.clear();
     }
 
+    /**
+     * Shows an error alert.
+     * 
+     * @param msg the error message
+     */
     private static void showError(String msg) {
         Alert a = new Alert(AlertType.ERROR);
         a.setHeaderText(null);
@@ -83,6 +105,11 @@ public class ControllerAdminResetPassword {
         a.showAndWait();
     }
 
+    /**
+     * Shows an info alert.
+     * 
+     * @param msg the info message
+     */
     private static void showInfo(String msg) {
         Alert a = new Alert(AlertType.INFORMATION);
         a.setHeaderText(null);

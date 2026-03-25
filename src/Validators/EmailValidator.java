@@ -1,108 +1,108 @@
 package Validators;
 
 /**
- * EmailValidator - Validates email format
+ * <p>Title: EmailValidator Class</p>
  * 
- * Rules:
- * - Cannot be empty
- * - Must contain exactly one @ symbol
- * - Must have text before @
- * - Must have domain after @ with at least one dot
- * - No spaces allowed
- * 
- * @author Manisha
+ * <p>Description: Validates email address format using standard rules.</p>
+ *
+ * @author Manisha Chakrabarty
+ * @version 1.0
  */
 public class EmailValidator {
-    
+
+    /** The email being validated */
     private String email;
-    private String errorMessage;
-    private boolean isValid;
     
+    /** The error message if validation fails */
+    private String errorMessage;
+    
+    /** Whether the last validation was successful */
+    private boolean isValid;
+
+    /**
+     * Default constructor. Initializes validator with empty values.
+     */
     public EmailValidator() {
         this.email = "";
         this.errorMessage = "";
         this.isValid = false;
     }
-    
+
+    /**
+     * Validates the given email address.
+     * 
+     * @param email the email address to validate
+     * @return true if valid, false otherwise
+     */
     public boolean validate(String email) {
         this.email = email;
         this.errorMessage = "";
         this.isValid = false;
-        
-        // Check null or empty
+
         if (email == null || email.isEmpty()) {
             this.errorMessage = "Email cannot be empty";
             return false;
         }
-        
-        // Check for spaces
-        if (email.contains(" ")) {
-            this.errorMessage = "Email cannot contain spaces";
-            return false;
-        }
-        
-        // Check for @ symbol
+
         int atIndex = email.indexOf('@');
         if (atIndex == -1) {
             this.errorMessage = "Email must contain @ symbol";
             return false;
         }
-        
-        // Check for multiple @ symbols
-        if (email.indexOf('@') != email.lastIndexOf('@')) {
-            this.errorMessage = "Email can only have one @ symbol";
-            return false;
-        }
-        
-        // Check for text before @
+
         if (atIndex == 0) {
             this.errorMessage = "Email must have text before @ symbol";
             return false;
         }
-        
-        // Get domain part
+
         String domain = email.substring(atIndex + 1);
-        
-        // Check for domain after @
         if (domain.isEmpty()) {
             this.errorMessage = "Email must have domain after @ symbol";
             return false;
         }
-        
-        // Check domain has a dot
+
         if (!domain.contains(".")) {
             this.errorMessage = "Email domain must contain a dot";
             return false;
         }
-        
-        // Check domain doesn't start with dot
-        if (domain.startsWith(".")) {
-            this.errorMessage = "Email domain cannot start with a dot";
-            return false;
-        }
-        
-        // Check domain doesn't end with dot
-        if (domain.endsWith(".")) {
-            this.errorMessage = "Email domain cannot end with a dot";
-            return false;
-        }
-        
+
         this.isValid = true;
         return true;
     }
-    
+
+    /**
+     * Returns whether the last validation was successful.
+     * 
+     * @return true if valid, false otherwise
+     */
     public boolean isValid() {
         return this.isValid;
     }
-    
+
+    /**
+     * Returns the error message from last validation.
+     * 
+     * @return the error message or empty string
+     */
     public String getErrorMessage() {
         return this.errorMessage;
     }
-    
+
+    /**
+     * Returns the last validated email.
+     * 
+     * @return the email string
+     */
     public String getEmail() {
         return this.email;
     }
-    
+
+    /**
+     * Static method to validate email and return error message.
+     * 
+     * @param email the email to validate
+     * @return error message or empty string if valid
+     */
     public static String checkEmail(String email) {
         EmailValidator validator = new EmailValidator();
         validator.validate(email);

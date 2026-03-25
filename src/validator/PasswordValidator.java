@@ -1,17 +1,52 @@
 package validator;
 
+/**
+ * <p>Title: PasswordValidator Class</p>
+ * 
+ * <p>Description: Validates password using FSM approach.</p>
+ *
+ * @author Ali
+ * @version 1.0
+ */
 public class PasswordValidator {
 
+    /** State: has uppercase letter */
     private boolean hasUppercase;
+    
+    /** State: has lowercase letter */
     private boolean hasLowercase;
+    
+    /** State: has digit */
     private boolean hasDigit;
+    
+    /** State: has special character */
     private boolean hasSpecialChar;
+    
+    /** State: meets minimum length */
     private boolean hasMinLength;
+    
+    /** State: within maximum length */
     private boolean hasMaxLength;
 
+    /** Minimum password length */
     private static final int MIN_LENGTH = 8;
+    
+    /** Maximum password length */
     private static final int MAX_LENGTH = 100;
 
+    /**
+     * Default constructor.
+     */
+    public PasswordValidator() {
+        resetStates();
+    }
+
+    /**
+     * Validates the password.
+     * 
+     * @param password the password to validate
+     * @return true if valid, false otherwise
+     */
     public boolean validate(String password) {
         resetStates();
 
@@ -47,6 +82,9 @@ public class PasswordValidator {
         return hasUppercase && hasLowercase && hasDigit && hasSpecialChar && hasMinLength && hasMaxLength;
     }
 
+    /**
+     * Resets all states.
+     */
     private void resetStates() {
         hasUppercase = false;
         hasLowercase = false;
@@ -56,36 +94,64 @@ public class PasswordValidator {
         hasMaxLength = true;
     }
 
+    /**
+     * Returns uppercase state.
+     * @return true if has uppercase
+     */
     public boolean hasUppercase() {
         return hasUppercase;
     }
 
+    /**
+     * Returns lowercase state.
+     * @return true if has lowercase
+     */
     public boolean hasLowercase() {
         return hasLowercase;
     }
 
+    /**
+     * Returns digit state.
+     * @return true if has digit
+     */
     public boolean hasDigit() {
         return hasDigit;
     }
 
+    /**
+     * Returns special character state.
+     * @return true if has special char
+     */
     public boolean hasSpecialCharacter() {
         return hasSpecialChar;
     }
 
+    /**
+     * Returns min length state.
+     * @return true if meets min length
+     */
     public boolean hasMinLength() {
         return hasMinLength;
     }
 
+    /**
+     * Returns max length state.
+     * @return true if within max length
+     */
     public boolean hasMaxLength() {
         return hasMaxLength;
     }
 
+    /**
+     * Returns requirements status string.
+     * @return formatted status
+     */
     public String getRequirementsStatus() {
         return "Uppercase: " + (hasUppercase ? "Y" : "N") + "\n"
              + "Lowercase: " + (hasLowercase ? "Y" : "N") + "\n"
              + "Digit: " + (hasDigit ? "Y" : "N") + "\n"
-             + "Special Character: " + (hasSpecialChar ? "Y" : "N") + "\n"
-             + "Minimum Length (8): " + (hasMinLength ? "Y" : "N") + "\n"
-             + "Maximum Length (100): " + (hasMaxLength ? "Y" : "N");
+             + "Special: " + (hasSpecialChar ? "Y" : "N") + "\n"
+             + "Min Length: " + (hasMinLength ? "Y" : "N") + "\n"
+             + "Max Length: " + (hasMaxLength ? "Y" : "N");
     }
 }

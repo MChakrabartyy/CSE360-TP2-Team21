@@ -95,13 +95,13 @@ public class ViewUserLogin {
 	}
 
 	/**********
-	 * <p> Method: ViewUserLoginPage() </p>
+	 * <p> Method: ViewUserLogin() </p>
 	 * 
-	 * <p> Description: This method is called when the application first starts. It must handle
-	 * two cases: 1) when no has been established and 2) when one or more users have been 
-	 * established.
+	 * <p> Description: Private constructor that initializes the User Login GUI. This method is 
+	 * called when the application first starts. It handles two cases: 1) when no user has been 
+	 * established and 2) when one or more users have been established.
 	 * 
-	 * If there are no users in the database, this means that the person starting the system jmust
+	 * If there are no users in the database, this means that the person starting the system must
 	 * be an administrator, so a special GUI is provided to allow this Admin to set a username and
 	 * password.
 	 * 
@@ -109,13 +109,8 @@ public class ViewUserLogin {
 	 * and for potential new users to provide an invitation code and if it is valid, they are taken
 	 * to a page where they can specify a username and password.</p>
 	 * 
-	 * @param ps specifies the JavaFX Stage to be used for this GUI and it's methods
-	 * 
-	 * @param theRoot specifies the JavaFX Pane to be used for this GUI and it's methods
-	 * 
-	 * @param db specifies the Database to be used by this GUI and it's methods
-	 * 
 	 */
+
 	private ViewUserLogin() {
 
 		// Create the Pane for the list of widgets and the Scene for the window

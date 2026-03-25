@@ -204,7 +204,7 @@ public class ViewUserUpdate {
 	 * each GUI object.</p>
 	 * 
 	 * This is a singleton and is only performed once.  Subsequent uses fill in the changeable
-	 * fields using the displayUserUpdate method.</p>
+	 * fields using the displayUserUpdate method.
 	 * 
 	 */
 	

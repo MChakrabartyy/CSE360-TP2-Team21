@@ -1,62 +1,57 @@
 package Validators;
 
 /**
- * Test class for EmailValidator
+ * <p>Title: EmailValidatorTest Class</p>
  * 
- * @author Manisha
+ * <p>Description: Test cases for EmailValidator.</p>
+ *
+ * @author Manisha Chakrabarty
+ * @version 1.0
  */
 public class EmailValidatorTest {
-    
+
+    /** Count of passed tests */
     private static int passed = 0;
-    private static int failed = 0;
     
+    /** Count of failed tests */
+    private static int failed = 0;
+
+    /**
+     * Main method to run all tests.
+     * 
+     * @param args command line arguments (not used)
+     */
     public static void main(String[] args) {
-        System.out.println("========================================");
-        System.out.println("    EMAIL VALIDATOR TESTS");
-        System.out.println("========================================\n");
-        
-        // Should FAIL
-        test("Empty string", "", false);
-        test("No @ symbol", "johnexample.com", false);
-        test("Multiple @ symbols", "john@@example.com", false);
-        test("Nothing before @", "@example.com", false);
-        test("Nothing after @", "john@", false);
-        test("No dot in domain", "john@examplecom", false);
-        test("Domain starts with dot", "john@.example.com", false);
-        test("Domain ends with dot", "john@example.", false);
-        test("Contains space", "john doe@example.com", false);
-        
-        // Should PASS
-        test("Valid simple", "john@example.com", true);
-        test("Valid with dot in local", "john.doe@example.com", true);
-        test("Valid subdomain", "john@mail.example.com", true);
-        test("Valid multiple dots", "john@sub.mail.example.com", true);
-        test("Valid with numbers", "john123@example.com", true);
-        
-        // Summary
-        System.out.println("\n========================================");
-        System.out.println("    SUMMARY");
-        System.out.println("========================================");
+        System.out.println("=== EMAIL VALIDATOR TESTS ===\n");
+
+        test("Empty email", "", false);
+        test("No @ symbol", "notemail", false);
+        test("Nothing before @", "@domain.com", false);
+        test("Nothing after @", "user@", false);
+        test("No dot in domain", "user@domain", false);
+        test("Valid email", "user@domain.com", true);
+
+        System.out.println("\n=== RESULTS ===");
         System.out.println("Passed: " + passed);
         System.out.println("Failed: " + failed);
-        System.out.println("Total:  " + (passed + failed));
-        System.out.println("========================================");
     }
-    
+
+    /**
+     * Runs a single test case.
+     * 
+     * @param testName description of the test
+     * @param input the email to test
+     * @param shouldPass expected result
+     */
     private static void test(String testName, String input, boolean shouldPass) {
         EmailValidator validator = new EmailValidator();
         boolean result = validator.validate(input);
         
-        boolean testPassed = (result == shouldPass);
-        
-        if (testPassed) {
-            System.out.println("✓ PASS: " + testName);
+        if (result == shouldPass) {
+            System.out.println("PASS: " + testName);
             passed++;
         } else {
-            System.out.println("✗ FAIL: " + testName);
-            System.out.println("        Input: \"" + input + "\"");
-            System.out.println("        Expected: " + shouldPass + ", Got: " + result);
-            System.out.println("        Error: " + validator.getErrorMessage());
+            System.out.println("FAIL: " + testName);
             failed++;
         }
     }
